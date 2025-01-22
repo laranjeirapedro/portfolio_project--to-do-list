@@ -1,3 +1,2 @@
-export * from "./AddTask";
+export * from "./TaskApp";
 export * from "./Header";
-export * from "./DeleteTask";

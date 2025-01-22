@@ -1,10 +1,10 @@
-import { AddTask, Header } from "./components";
+import { TaskApp, Header } from "./components";
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="w-full m-0 p-0">
       <Header />
-      <AddTask />
+      <TaskApp />
     </div>
   );
 }
