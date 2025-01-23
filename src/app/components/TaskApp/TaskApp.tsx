@@ -6,13 +6,13 @@ import BG from "../../public/bg.jpg";
 
 export const TaskApp = () => {
   const [task, setTask] = useState("");
-  const [taskList, setTaskList] = useState([]);
+  const [taskList, setTaskList] = useState<string[]>([]);
 
-  const getTask = (e) => {
+  const getTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
   };
 
-  const inputSubmit = (e) => {
+  const inputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (task.trim()) {
       setTaskList([...taskList, task]);
@@ -20,7 +20,7 @@ export const TaskApp = () => {
     }
   };
 
-  const deleteTask = (index) => {
+  const deleteTask = (index: number) => {
     setTaskList(taskList.filter((_, i) => i !== index));
   };
 
