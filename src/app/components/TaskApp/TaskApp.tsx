@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import BG from "../../public/bg.jpg";
+import BG from "@public/bg.jpg";
 
 export const TaskApp = () => {
   const [task, setTask] = useState("");
