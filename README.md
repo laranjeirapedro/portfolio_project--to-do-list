@@ -1,4 +1,4 @@
-![App screenshot](./public/app-thumbnail.webp)](https://portfolio-project-to-do-list.vercel.app/)
+![App screenshot](./public/app-thumbnail.webp)
 # To-Do App
 
 This is a simple and functional To-Do App developed using **React**, **Next.js**, **Tailwind CSS**, and **TypeScript**. The app allows users to manage their daily tasks efficiently by adding, deleting, and viewing tasks in a clean and responsive interface.
