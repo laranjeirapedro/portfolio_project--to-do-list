@@ -11,6 +11,7 @@ type Task = {
 export const TaskApp = () => {
   const [task, setTask] = useState("");
   const [taskList, setTaskList] = useState<Task[]>([]);
+  const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
 
   const getTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
@@ -36,6 +37,12 @@ export const TaskApp = () => {
     );
   };
 
+  const filteredTasks = taskList.filter((task) => {
+    if (filter === "completed") return task.completed;
+    if (filter === "pending") return !task.completed;
+    return true;
+  });
+
   return (
     <div
       className="w-screen h-screen bg-contain bg-center flex flex-col justify-center items-center text-center"
@@ -60,8 +67,34 @@ export const TaskApp = () => {
               Add Task
             </button>
           </form>
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={() => setFilter("all")}
+              className={`px-4 py-2 border rounded-md ${
+                filter === "all" ? "bg-blue-500 text-white" : "bg-white"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilter("pending")}
+              className={`px-4 py-2 border rounded-md ${
+                filter === "pending" ? "bg-yellow-400 text-white" : "bg-white"
+              }`}
+            >
+              Pending
+            </button>
+            <button
+              onClick={() => setFilter("completed")}
+              className={`px-4 py-2 border rounded-md ${
+                filter === "completed" ? "bg-green-500 text-white" : "bg-white"
+              }`}
+            >
+              Completed
+            </button>
+          </div>
           <ul className="flex flex-wrap flex-col content-center mt-4">
-            {taskList.map((task, index) => (
+            {filteredTasks.map((task, index) => (
               <li
                 key={index}
                 className={`w-10/12 h-12 px-2 flex flex-wrap items-center justify-between mb-2 border-solid border-black border-2 rounded-md ${
