@@ -37,20 +37,36 @@ export const TaskApp = () => {
     );
   };
 
+  const getDate = () => {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    return `${month}/${date}/${year}`;
+  };
+  const [currentDate, setCurrentDate] = useState(getDate());
+
   const filteredTasks = taskList.filter((task) => {
     if (filter === "completed") return task.completed;
     if (filter === "pending") return !task.completed;
     return true;
   });
 
+  const baseHeight = 250;
+  const taskHeight = 65;
+  const yellowDivHeight = baseHeight + filteredTasks.length * taskHeight;
+
   return (
     <div
-      className="w-screen h-screen bg-contain bg-center flex flex-col justify-center items-center text-center"
+      className="w-screen h-screen overflow-y-auto bg-contain bg-center flex flex-col justify-center items-center text-center"
       style={{ backgroundImage: `url(${BG.src})` }}
     >
       <h1 className="text-4xl font-bold pb-8">My To-Do-List</h1>
       <div className="relative w-8/12 h-4/5 p-4">
-        <div className="absolute inset-0 bg-yellow-200 opacity-50 rounded-lg"></div>
+        <div
+          className="absolute w-full transition-all duration-500 bg-yellow-200 opacity-50 rounded-lg"
+          style={{ height: `${yellowDivHeight}px` }}
+        ></div>
         <div className="relative z-10">
           <form onSubmit={inputSubmit}>
             <input
@@ -63,6 +79,7 @@ export const TaskApp = () => {
             <button
               className="p-2 m-4 border-solid border-black border-2 rounded-md bg-blue-500"
               type="submit"
+              onClick={() => getDate()}
             >
               Add Task
             </button>
@@ -97,15 +114,31 @@ export const TaskApp = () => {
             {filteredTasks.map((task, index) => (
               <li
                 key={index}
-                className={`w-10/12 h-12 px-2 flex flex-wrap items-center justify-between mb-2 border-solid border-black border-2 rounded-md ${
-                  task.completed ? "bg-green-300 line-through" : "bg-white"
+                className={`w-10/12 h-14 px-2 flex flex-wrap items-center justify-between mb-2 border-solid border-black border-2 rounded-md ${
+                  task.completed ? "bg-green-300" : "bg-white"
                 }`}
               >
-                <span>{task.text}</span>
+                <div className="flex flex-col gap-3 text-left">
+                  <span
+                    className={`${
+                      task.completed ? "line-through text-gray-500" : ""
+                    }`}
+                  >
+                    {task.text}
+                  </span>
+                  <p className="text-xs text-blue-500">
+                    {task.completed
+                      ? `Completed on: ${currentDate}`
+                      : `Added on: ${currentDate}`}
+                  </p>
+                </div>
                 <div className="flex gap-2">
                   <button
                     className="p-1 bg-green-600 text-white border-2 border-black rounded-md"
-                    onClick={() => toggleComplete(index)}
+                    onClick={() => {
+                      toggleComplete(index);
+                      getDate();
+                    }}
                   >
                     {task.completed ? "Undo" : "Done"}
                   </button>
