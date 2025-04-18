@@ -6,12 +6,17 @@ import BG from "@public/bg.jpg";
 type Task = {
   text: string;
   completed: boolean;
+  createdAt: string;
+  editedAt?: string;
+  completedAt?: string;
 };
 
 export const TaskApp = () => {
   const [task, setTask] = useState("");
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingText, SetEditingText] = useState("");
 
   const getTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
@@ -20,7 +25,10 @@ export const TaskApp = () => {
   const inputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (task.trim()) {
-      setTaskList([...taskList, { text: task, completed: false }]);
+      setTaskList([
+        ...taskList,
+        { text: task, completed: false, createdAt: getDate() },
+      ]);
       setTask("");
     }
   };
@@ -32,7 +40,13 @@ export const TaskApp = () => {
   const toggleComplete = (index: number) => {
     setTaskList(
       taskList.map((t, i) =>
-        i === index ? { ...t, completed: !t.completed } : t
+        i === index
+          ? {
+              ...t,
+              completed: !t.completed,
+              completedAt: !t.completed ? getDate() : undefined,
+            }
+          : t
       )
     );
   };
@@ -45,6 +59,24 @@ export const TaskApp = () => {
     return `${month}/${date}/${year}`;
   };
   const [currentDate, setCurrentDate] = useState(getDate());
+
+  const editTask = (index: number) => {
+    setEditingIndex(index);
+    SetEditingText(taskList[index].text);
+  };
+
+  const saveEditTask = (index: number) => {
+    const updateList = [...taskList];
+    updateList[index].text = editingText;
+    updateList[index].editedAt = getDate();
+    setTaskList(updateList);
+    setEditingIndex(null);
+  };
+
+  const cancelEditTask = () => {
+    setEditingIndex(null);
+    SetEditingText("");
+  };
 
   const filteredTasks = taskList.filter((task) => {
     if (filter === "completed") return task.completed;
@@ -114,40 +146,79 @@ export const TaskApp = () => {
             {filteredTasks.map((task, index) => (
               <li
                 key={index}
-                className={`w-10/12 h-14 px-2 flex flex-wrap items-center justify-between mb-2 border-solid border-black border-2 rounded-md ${
+                className={`w-10/12 h-18 px-2 flex flex-wrap items-center justify-between mb-2 border-solid border-black border-2 rounded-md ${
                   task.completed ? "bg-green-300" : "bg-white"
                 }`}
               >
                 <div className="flex flex-col gap-3 text-left">
-                  <span
-                    className={`${
-                      task.completed ? "line-through text-gray-500" : ""
-                    }`}
-                  >
-                    {task.text}
-                  </span>
-                  <p className="text-xs text-blue-500">
-                    {task.completed
-                      ? `Completed on: ${currentDate}`
-                      : `Added on: ${currentDate}`}
-                  </p>
+                  {editingIndex === index ? (
+                    <input
+                      type="text"
+                      className="w-auto mt-2 px-2 py-1 border border-black rounded-md"
+                      value={editingText}
+                      onChange={(e) => SetEditingText(e.target.value)}
+                    />
+                  ) : (
+                    <span
+                      className={`${
+                        task.completed ? "line-through text-gray-500" : ""
+                      }`}
+                    >
+                      {task.text}
+                    </span>
+                  )}
+                  <div className="text-xs text-blue-500 flex flex-col">
+                    <span>
+                      {task.editedAt
+                        ? `Edited on: ${task.editedAt}`
+                        : `Created on: ${task.createdAt}`}
+                    </span>
+                    {task.completed && task.completedAt && (
+                      <span>Completed on: {task.completedAt}</span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    className="p-1 bg-green-600 text-white border-2 border-black rounded-md"
-                    onClick={() => {
-                      toggleComplete(index);
-                      getDate();
-                    }}
-                  >
-                    {task.completed ? "Undo" : "Done"}
-                  </button>
-                  <button
-                    className="p-1 bg-red-600 justify-items-end border-solid border-2 border-black rounded-md"
-                    onClick={() => deleteTask(index)}
-                  >
-                    Delete
-                  </button>
+                  {editingIndex === index ? (
+                    <>
+                      <button
+                        className="min-w-[60px] p-1 bg-green-600 text-white border-2 border-black rounded-md"
+                        onClick={() => saveEditTask(index)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="min-w-[60px] p-1 bg-gray-400 text-white border-2 border-black rounded-md"
+                        onClick={cancelEditTask}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="min-w-[60px] p-1 bg-yellow-400 text-white border-2 border-black rounded-md"
+                        onClick={() => editTask(index)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="min-w-[60px] p-1 bg-green-600 text-white border-2 border-black rounded-md"
+                        onClick={() => {
+                          toggleComplete(index);
+                          getDate();
+                        }}
+                      >
+                        {task.completed ? "Undo" : "Done"}
+                      </button>
+                      <button
+                        className="min-w-[60px] p-1 bg-red-600 justify-items-end border-solid border-2 border-black rounded-md"
+                        onClick={() => deleteTask(index)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               </li>
             ))}
