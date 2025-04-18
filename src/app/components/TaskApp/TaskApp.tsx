@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BG from "@public/bg.jpg";
 
 type Task = {
+  _id?: string;
   text: string;
   completed: boolean;
-  createdAt: string;
+  createdAt?: string;
   editedAt?: string;
   completedAt?: string;
 };
@@ -18,18 +19,51 @@ export const TaskApp = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingText, SetEditingText] = useState("");
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await fetch("/api/tasks");
+        const data = await res.json();
+        if (res.ok) {
+          setTaskList(data.tasks);
+        } else {
+          console.error("Failed to fetch tasks:", data.error);
+        }
+      } catch (err) {
+        console.error("Error fetching tasks:", err);
+      }
+    };
+    fetchTasks();
+  }, []);
+
   const getTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
   };
 
-  const inputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const inputSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (task.trim()) {
-      setTaskList([
-        ...taskList,
-        { text: task, completed: false, createdAt: getDate() },
-      ]);
-      setTask("");
+    if (!task.trim()) return;
+
+    try {
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: task,
+          completed: false,
+          createdAt: new Date(),
+        }),
+      });
+
+      if (res.ok) {
+        const newTask = await res.json();
+        setTaskList([...taskList, newTask]);
+        setTask("");
+      } else {
+        console.error("Failed to add task");
+      }
+    } catch (error) {
+      console.error("Error adding task:", error);
     }
   };
 
@@ -37,18 +71,36 @@ export const TaskApp = () => {
     setTaskList(taskList.filter((_, i) => i !== index));
   };
 
-  const toggleComplete = (index: number) => {
-    setTaskList(
-      taskList.map((t, i) =>
-        i === index
-          ? {
-              ...t,
-              completed: !t.completed,
-              completedAt: !t.completed ? getDate() : undefined,
-            }
-          : t
-      )
-    );
+  const toggleComplete = async (index: number) => {
+    const taskToUpdate = taskList[index];
+    const updatedCompleted = !taskToUpdate.completed;
+
+    try {
+      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: updatedCompleted,
+          editedAt: new Date(),
+        }),
+      });
+
+      if (response.ok) {
+        const updatedTask = {
+          ...taskToUpdate,
+          completed: updatedCompleted,
+        };
+        const updatedList = [...taskList];
+        updatedList[index] = updatedTask;
+        setTaskList(updatedList);
+      } else {
+        console.error("Failed to toggle task completion");
+      }
+    } catch (error) {
+      console.error("Error toggling completion:", error);
+    }
   };
 
   const getDate = () => {
@@ -65,12 +117,33 @@ export const TaskApp = () => {
     SetEditingText(taskList[index].text);
   };
 
-  const saveEditTask = (index: number) => {
-    const updateList = [...taskList];
-    updateList[index].text = editingText;
-    updateList[index].editedAt = getDate();
-    setTaskList(updateList);
-    setEditingIndex(null);
+  const saveEditTask = async (index: number) => {
+    const taskToUpdate = taskList[index];
+
+    try {
+      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: editingText,
+          editedAt: new Date(),
+        }),
+      });
+
+      if (response.ok) {
+        const updatedTask = { ...taskToUpdate, text: editingText };
+        const updatedList = [...taskList];
+        updatedList[index] = updatedTask;
+        setTaskList(updatedList);
+        setEditingIndex(null);
+      } else {
+        console.error("Failed to update task");
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
   const cancelEditTask = () => {
