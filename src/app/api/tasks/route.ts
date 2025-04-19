@@ -1,13 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
-import clientPromise from "@/lib/mongodb";
 import { connectToDatabase } from "@/lib/mongodb";
 import Task from "@/models/taskModel";
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
-    const tasks = await db.collection("tasks").find({}).toArray();
+    const tasks = await Task.find({});
     return NextResponse.json({ tasks });
   } catch (error) {
     console.error("GET error:", error);
@@ -20,7 +17,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     await connectToDatabase();
 
-    const newTask = new Task(body);
+    const newTask = new Task({
+      ...body,
+      createdAt: new Date(),  // Atribuindo a data automaticamente
+    });
     const savedTask = await newTask.save();
 
     return new Response(JSON.stringify(savedTask), {
