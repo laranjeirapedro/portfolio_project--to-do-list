@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BG from "@public/bg.jpg";
 
 type Task = {
+  _id: string;
   text: string;
   completed: boolean;
   createdAt: string;
@@ -18,37 +19,103 @@ export const TaskApp = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingText, SetEditingText] = useState("");
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await fetch("/api/tasks");
+        const data = await res.json();
+        if (res.ok) {
+          setTaskList(data.tasks);
+        } else {
+          console.error("Failed to fetch tasks:", data.error);
+        }
+      } catch (err) {
+        console.error("Error fetching tasks:", err);
+      }
+    };
+    fetchTasks();
+  }, []);
+
   const getTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
   };
 
-  const inputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const inputSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (task.trim()) {
-      setTaskList([
-        ...taskList,
-        { text: task, completed: false, createdAt: getDate() },
-      ]);
-      setTask("");
+    if (!task.trim()) return;
+
+    try {
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: task,
+          completed: false,
+          createdAt: new Date(),
+        }),
+      });
+
+      if (res.ok) {
+        const newTask = await res.json();
+        setTaskList([...taskList, newTask]);
+        setTask("");
+      } else {
+        console.error("Failed to add task");
+      }
+    } catch (error) {
+      console.error("Error adding task:", error);
     }
   };
 
-  const deleteTask = (index: number) => {
-    setTaskList(taskList.filter((_, i) => i !== index));
+  const deleteTask = async (id: string) => {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setTaskList(taskList.filter((task) => task._id !== id));
+      } else {
+        console.error("Failed to delete task.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
   };
 
-  const toggleComplete = (index: number) => {
-    setTaskList(
-      taskList.map((t, i) =>
-        i === index
-          ? {
-              ...t,
-              completed: !t.completed,
-              completedAt: !t.completed ? getDate() : undefined,
-            }
-          : t
-      )
-    );
+  const toggleComplete = async (index: number) => {
+    const taskToUpdate = taskList[index];
+    const updatedCompleted = !taskToUpdate.completed;
+
+    try {
+      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: updatedCompleted,
+          editedAt: new Date(),
+          completedAt: updatedCompleted ? new Date() : null,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedTask = {
+          ...taskToUpdate,
+          completed: updatedCompleted,
+          editedAt: new Date().toISOString(),
+          completedAt: updatedCompleted ? new Date().toISOString() : undefined,
+        };
+        const updatedList = [...taskList];
+        updatedList[index] = updatedTask;
+        setTaskList(updatedList);
+      } else {
+        console.error("Failed to toggle task completion");
+      }
+    } catch (error) {
+      console.error("Error toggling completion:", error);
+    }
   };
 
   const getDate = () => {
@@ -60,17 +127,44 @@ export const TaskApp = () => {
   };
   const [currentDate, setCurrentDate] = useState(getDate());
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Meses começam de 0, então somamos 1
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
   const editTask = (index: number) => {
     setEditingIndex(index);
     SetEditingText(taskList[index].text);
   };
 
-  const saveEditTask = (index: number) => {
-    const updateList = [...taskList];
-    updateList[index].text = editingText;
-    updateList[index].editedAt = getDate();
-    setTaskList(updateList);
-    setEditingIndex(null);
+  const saveEditTask = async (index: number) => {
+    const taskToUpdate = taskList[index];
+  
+    try {
+      const res = await fetch(`/api/tasks/${taskToUpdate._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: editingText }),
+      });
+  
+      if (res.ok) {
+        const updatedTask = await res.json();
+        const updatedList = [...taskList];
+        updatedList[index] = updatedTask;
+        setTaskList(updatedList);
+        setEditingIndex(null);
+      } else {
+        console.error("Failed to update task.");
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
   const cancelEditTask = () => {
@@ -111,7 +205,7 @@ export const TaskApp = () => {
             <button
               className="p-2 m-4 border-solid border-black border-2 rounded-md bg-blue-500"
               type="submit"
-              onClick={() => getDate()}
+              onClick={() => formatDate(getDate())}
             >
               Add Task
             </button>
@@ -170,11 +264,11 @@ export const TaskApp = () => {
                   <div className="text-xs text-blue-500 flex flex-col">
                     <span>
                       {task.editedAt
-                        ? `Edited on: ${task.editedAt}`
-                        : `Created on: ${task.createdAt}`}
+                        ? `Edited on: ${formatDate(task.editedAt)}`
+                        : `Created on: ${formatDate(task.createdAt)}`}
                     </span>
                     {task.completed && task.completedAt && (
-                      <span>Completed on: {task.completedAt}</span>
+                      <span>Completed on: {formatDate(task.completedAt)}</span>
                     )}
                   </div>
                 </div>
@@ -206,14 +300,14 @@ export const TaskApp = () => {
                         className="min-w-[60px] p-1 bg-green-600 text-white border-2 border-black rounded-md"
                         onClick={() => {
                           toggleComplete(index);
-                          getDate();
+                          formatDate(getDate());
                         }}
                       >
                         {task.completed ? "Undo" : "Done"}
                       </button>
                       <button
                         className="min-w-[60px] p-1 bg-red-600 justify-items-end border-solid border-2 border-black rounded-md"
-                        onClick={() => deleteTask(index)}
+                        onClick={() => deleteTask(task._id)}
                       >
                         Delete
                       </button>
