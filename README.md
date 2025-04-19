@@ -1,92 +1,136 @@
 ![App screenshot](./public/app-thumbnail.webp)
 # To-Do App
 
-This is a simple and functional To-Do App developed using **React**, **Next.js**, **Tailwind CSS**, and **TypeScript**. The app allows users to manage their daily tasks efficiently by adding, deleting, and viewing tasks in a clean and responsive interface.
+This is a simple and functional To-Do App developed using React, Next.js, Tailwind CSS, TypeScript, and MongoDB. The app allows users to manage their daily tasks efficiently by adding, editing, deleting, and marking tasks as completed in a clean and responsive interface.
 
-## Project Overview
+## 🚀 Project Overview
 
-The To-Do App demonstrates fundamental frontend and backend development concepts. It highlights my ability to create user-friendly interfaces, manage application state using modern tools and frameworks.
+The To-Do App demonstrates full-stack development skills, combining a responsive frontend with a connected backend using MongoDB. It highlights my ability to create user-friendly interfaces, manage application state, and persist data using modern tools and frameworks.
 
-## Features
+## ✅ Features
 
-- **Task Management**: Add tasks, view the task list, and delete tasks as needed.
-- **Responsive Design**: The application adapts seamlessly to different screen sizes, ensuring usability on both desktop and mobile devices.
-- **Dynamic Styling**: Leveraged Tailwind CSS for a clean and modern design.
-- **State Management**: Used React hooks (e.g., `useState`) for managing state in the app.
-- **Type Safety**: Ensured code reliability and clarity by using TypeScript.
+Task Management: Add, edit, delete, and mark tasks as completed.
 
-## Components
+Data Persistence: All tasks are stored and retrieved from a MongoDB database using a full RESTful API.
 
-### 1. `TaskApp`
-This is the main component of the application and includes:
-- **Input Form**: Allows users to add new tasks.
-- **Task List**: Displays tasks dynamically as they are added.
-- **Delete Functionality**: Users can remove tasks from the list.
+Responsive Design: Works seamlessly on mobile, tablet, and desktop devices.
 
-### Key Methods and Hooks Used
-- **`useState`**:
-  - To manage the input value for tasks.
-  - To store and update the task list dynamically.
-- **`onChange`**: Captures user input to update the `task` state.
-- **`onSubmit`**: Handles form submissions to add tasks to the task list.
-- **Dynamic Rendering**:
-  - Used the `map` function to dynamically generate task items.
+State Management: Managed with React hooks like useState and useEffect.
 
-## Tech Stack
+Dynamic Styling: Designed with Tailwind CSS for a clean and modern look.
 
-### Frontend
-- **React**: For building the UI components and managing state.
-- **Next.js**: For its performance and features like image optimization.
-- **Tailwind CSS**: To design a responsive and visually appealing interface.
-- **TypeScript**: For type safety and improved code quality.
+Type Safety: TypeScript is used throughout the codebase for reliability.
 
-### Development Tools
-- **VS Code**: As the code editor.
-- **Git & GitHub**: For version control and project hosting.
+API Routes (Next.js): Implemented using App Router and dynamic routes for handling CRUD operations.
 
-## How to Run the Project
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/laranjeirapedro/portfolio_project--to-do-list.git
-   ```
+## 🧩 Components
 
-2. Navigate to the project directory:
+TaskApp
 
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
+The main component of the application includes:
 
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+Input Form: For adding and editing tasks.
 
-5. Open your browser and navigate to:
-   ```bash
-   http://localhost:3000
-   ```
+Task List: Displays all tasks dynamically from the database.
 
-## Future Enhancements
+Actions: Edit, delete, and toggle completion status of each task.
 
-1. **Mark Tasks as Completed**:
-   - Add a feature to toggle tasks between completed and pending states.
-2. **Add Date to Tasks**:
-   - Add a date when tasks are created, edited, or completed.
-3. **Filter Tasks**:
-   - Enable filtering tasks by status (e.g., All, Pending, Completed).
-4. **Persistent Data**:
-   - Store tasks using `localStorage` or a backend database to maintain data across sessions.
-5. **Edit Tasks**:
-   - Allow users to edit existing tasks.
 
-## Why This Project?
-This project showcases my skills as a junior developer, demonstrating:
-- Proficiency in building responsive UIs using **Tailwind CSS**.
-- Familiarity with state management using **React hooks**.
-- Experience in creating scalable and type-safe code with **TypeScript**.
-- Understanding of basic **Next.js** concepts.
+## 🔧 Key Hooks & Methods
 
-## Feedback
-If you have any suggestions or feedback, feel free to reach out or open an issue on GitHub!
+useState: For managing task input, task list, and edit mode.
+
+useEffect: To fetch tasks on page load and refresh task list after actions.
+
+fetch API: Used to communicate with Next.js API routes (GET, POST, PUT, DELETE).
+
+
+## 🛠 Tech Stack
+
+Frontend
+
+React
+
+Next.js (App Router)
+
+Tailwind CSS
+
+TypeScript
+
+
+Backend
+
+MongoDB Atlas
+
+Mongoose
+
+Next.js API Routes
+
+
+Development Tools
+
+VS Code
+
+Git & GitHub
+
+Postman (for API testing)
+
+
+## ▶️ How to Run the Project
+
+### 1. Clone the repository
+git clone https://github.com/laranjeirapedro/portfolio_project--to-do-list.git
+
+### 2. Navigate into the directory
+cd portfolio_project--to-do-list
+
+### 3. Install dependencies
+npm install
+
+### 4. Create a .env.local file and add your MongoDB URI
+MONGODB_URI=your-mongodb-connection-string
+MONGODB_DB=todoApp
+
+### 5. Run the development server
+npm run dev
+
+Open http://localhost:3000 in your browser to view the app.
+
+## 🌱 Future Enhancements
+
+[ ] User Authentication
+Secure user login to manage personal task lists.
+
+[ ] Drag-and-Drop Reordering
+Allow users to reorder tasks by priority.
+
+[ ] Due Dates and Reminders
+Let users assign due dates and receive notifications.
+
+[ ] Task Categories or Tags
+Organize tasks by category or custom tags.
+
+[ ] Dark Mode
+Add a theme toggle for better accessibility.
+
+[ ] Progress Tracker
+Show progress bars or stats for completed vs. pending tasks.
+
+
+## ❓ Why This Project?
+
+This project showcases my capabilities as a full-stack developer, highlighting:
+
+Responsive design and UX using Tailwind CSS.
+
+State and logic handling with React and TypeScript.
+
+API development and integration with Next.js App Router.
+
+Database integration and CRUD operations using MongoDB.
+
+
+## 🙌 Feedback
+
+If you have any ideas or suggestions to improve the app, feel free to open an issue or pull request!
