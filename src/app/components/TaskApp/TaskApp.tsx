@@ -125,7 +125,6 @@ export const TaskApp = () => {
     const date = today.getDate();
     return `${month}/${date}/${year}`;
   };
-  const [currentDate, setCurrentDate] = useState(getDate());
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -143,24 +142,27 @@ export const TaskApp = () => {
 
   const saveEditTask = async (index: number) => {
     const taskToUpdate = taskList[index];
-  
+
     try {
-      const res = await fetch(`/api/tasks/${taskToUpdate._id}`, {
-        method: "PATCH",
+      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: editingText }),
+        body: JSON.stringify({
+          text: editingText,
+          editedAt: new Date(),
+        }),
       });
-  
-      if (res.ok) {
-        const updatedTask = await res.json();
+
+      if (response.ok) {
+        const updatedTask = { ...taskToUpdate, text: editingText };
         const updatedList = [...taskList];
         updatedList[index] = updatedTask;
         setTaskList(updatedList);
         setEditingIndex(null);
       } else {
-        console.error("Failed to update task.");
+        console.error("Failed to update task");
       }
     } catch (error) {
       console.error("Error updating task:", error);

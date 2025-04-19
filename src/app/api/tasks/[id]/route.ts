@@ -3,36 +3,27 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Task from "@/models/taskModel";
 import { Types } from "mongoose";
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+
+  await connectToDatabase();
+
+  const { id } = params;
+  const { text, completed } = await req.json();
+
   try {
-    const { id } = context.params;
-    const body = await req.json();
-
-    await connectToDatabase();
-
-    const updatedFields: any = { ...body };
-    if (body.completed === true) {
-      updatedFields.completedAt = new Date();
-    } else {
-      updatedFields.completedAt = null;
-    }
-
-    const updatedTask = await Task.findByIdAndUpdate(id, updatedFields, {
-      new: true,
-    });
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { text, completed },
+      { new: true }
+    );
 
     if (!updatedTask) {
-      return new Response(JSON.stringify({ error: "Task not found" }), {
-        status: 404,
-      });
+      return NextResponse.json({ message: "Task not found" }, { status: 404 });
     }
 
-    return new Response(JSON.stringify(updatedTask), { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-    });
+    return NextResponse.json(updatedTask, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: "Error updating task", error: error.message }, { status: 500 });
   }
 }
 

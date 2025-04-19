@@ -1,4 +1,4 @@
-import { MongoClient, MongoClientOptions, Db } from "mongodb";
+import { MongoClient, MongoClientOptions } from "mongodb";
 import mongoose from "mongoose";
 
 const uri = process.env.MONGODB_URI!;
@@ -12,11 +12,11 @@ if (!process.env.MONGODB_URI) {
 }
 
 if (process.env.NODE_ENV === "development") {
-  if (!(global as any)._mongoClientPromise) {
+  if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    (global as any)._mongoClientPromise = client.connect();
+    global._mongoClientPromise = client.connect();
   }
-  clientPromise = (global as any)._mongoClientPromise;
+  clientPromise = global._mongoClientPromise;
 } else {
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
