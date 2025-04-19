@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import BG from "@public/bg.jpg";
 
 type Task = {
-  _id?: string;
+  _id: string;
   text: string;
   completed: boolean;
-  createdAt?: string;
+  createdAt: string;
   editedAt?: string;
   completedAt?: string;
 };
@@ -67,8 +67,20 @@ export const TaskApp = () => {
     }
   };
 
-  const deleteTask = (index: number) => {
-    setTaskList(taskList.filter((_, i) => i !== index));
+  const deleteTask = async (id: string) => {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setTaskList(taskList.filter((task) => task._id !== id));
+      } else {
+        console.error("Failed to delete task.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
   };
 
   const toggleComplete = async (index: number) => {
@@ -84,6 +96,7 @@ export const TaskApp = () => {
         body: JSON.stringify({
           completed: updatedCompleted,
           editedAt: new Date(),
+          completedAt: updatedCompleted ? new Date() : null,
         }),
       });
 
@@ -91,6 +104,8 @@ export const TaskApp = () => {
         const updatedTask = {
           ...taskToUpdate,
           completed: updatedCompleted,
+          editedAt: new Date().toISOString(),
+          completedAt: updatedCompleted ? new Date().toISOString() : undefined,
         };
         const updatedList = [...taskList];
         updatedList[index] = updatedTask;
@@ -112,6 +127,15 @@ export const TaskApp = () => {
   };
   const [currentDate, setCurrentDate] = useState(getDate());
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Meses começam de 0, então somamos 1
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
   const editTask = (index: number) => {
     setEditingIndex(index);
     SetEditingText(taskList[index].text);
@@ -119,27 +143,24 @@ export const TaskApp = () => {
 
   const saveEditTask = async (index: number) => {
     const taskToUpdate = taskList[index];
-
+  
     try {
-      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
-        method: "PUT",
+      const res = await fetch(`/api/tasks/${taskToUpdate._id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          text: editingText,
-          editedAt: new Date(),
-        }),
+        body: JSON.stringify({ text: editingText }),
       });
-
-      if (response.ok) {
-        const updatedTask = { ...taskToUpdate, text: editingText };
+  
+      if (res.ok) {
+        const updatedTask = await res.json();
         const updatedList = [...taskList];
         updatedList[index] = updatedTask;
         setTaskList(updatedList);
         setEditingIndex(null);
       } else {
-        console.error("Failed to update task");
+        console.error("Failed to update task.");
       }
     } catch (error) {
       console.error("Error updating task:", error);
@@ -184,7 +205,7 @@ export const TaskApp = () => {
             <button
               className="p-2 m-4 border-solid border-black border-2 rounded-md bg-blue-500"
               type="submit"
-              onClick={() => getDate()}
+              onClick={() => formatDate(getDate())}
             >
               Add Task
             </button>
@@ -243,11 +264,11 @@ export const TaskApp = () => {
                   <div className="text-xs text-blue-500 flex flex-col">
                     <span>
                       {task.editedAt
-                        ? `Edited on: ${task.editedAt}`
-                        : `Created on: ${task.createdAt}`}
+                        ? `Edited on: ${formatDate(task.editedAt)}`
+                        : `Created on: ${formatDate(task.createdAt)}`}
                     </span>
                     {task.completed && task.completedAt && (
-                      <span>Completed on: {task.completedAt}</span>
+                      <span>Completed on: {formatDate(task.completedAt)}</span>
                     )}
                   </div>
                 </div>
@@ -279,14 +300,14 @@ export const TaskApp = () => {
                         className="min-w-[60px] p-1 bg-green-600 text-white border-2 border-black rounded-md"
                         onClick={() => {
                           toggleComplete(index);
-                          getDate();
+                          formatDate(getDate());
                         }}
                       >
                         {task.completed ? "Undo" : "Done"}
                       </button>
                       <button
                         className="min-w-[60px] p-1 bg-red-600 justify-items-end border-solid border-2 border-black rounded-md"
-                        onClick={() => deleteTask(index)}
+                        onClick={() => deleteTask(task._id)}
                       >
                         Delete
                       </button>
