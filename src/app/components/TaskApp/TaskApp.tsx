@@ -1,28 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Task } from "@/app/types/types";
+import { formatDate } from "@/app/utils/formatDate";
+import { TaskForm } from "@/app/components/TaskForm";
+import { TaskFilter } from "@/app/components/TaskFilter";
+import { TaskList } from "@/app/components/TaskList";
 import BG from "@public/bg.jpg";
-
-type Task = {
-  _id: string;
-  text: string;
-  completed: boolean;
-  createdAt: string;
-  editedAt?: string;
-  completedAt?: string;
-};
 
 export const TaskApp = () => {
   const [task, setTask] = useState("");
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editingText, SetEditingText] = useState("");
+  const [editingText, setEditingText] = useState("");
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await fetch("/api/tasks");
+        const res = await fetch("http://localhost:5237/api/tasks");
         const data = await res.json();
         if (res.ok) {
           setTaskList(data.tasks);
@@ -36,16 +32,12 @@ export const TaskApp = () => {
     fetchTasks();
   }, []);
 
-  const getTask = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTask(e.target.value);
-  };
-
   const inputSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!task.trim()) return;
 
     try {
-      const res = await fetch("/api/tasks", {
+      const res = await fetch("http://localhost:5237/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -69,12 +61,12 @@ export const TaskApp = () => {
 
   const deleteTask = async (id: string) => {
     try {
-      const res = await fetch(`/api/tasks/${id}`, {
+      const res = await fetch(`http://localhost:5237/api/tasks/${id}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
-        setTaskList(taskList.filter((task) => task._id !== id));
+        setTaskList(taskList.filter((task) => task.id !== id));
       } else {
         console.error("Failed to delete task.");
       }
@@ -86,26 +78,32 @@ export const TaskApp = () => {
   const toggleComplete = async (index: number) => {
     const taskToUpdate = taskList[index];
     const updatedCompleted = !taskToUpdate.completed;
+    const updatedCompletedAt = updatedCompleted
+      ? new Date().toISOString()
+      : null;
 
     try {
-      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          completed: updatedCompleted,
-          editedAt: new Date(),
-          completedAt: updatedCompleted ? new Date() : null,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5237/api/tasks/${taskToUpdate.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: taskToUpdate.text,
+            completed: updatedCompleted,
+            completedAt: updatedCompletedAt,
+            editedAt: taskToUpdate.editedAt ?? null,
+          }),
+        }
+      );
 
       if (response.ok) {
         const updatedTask = {
           ...taskToUpdate,
           completed: updatedCompleted,
-          editedAt: new Date().toISOString(),
-          completedAt: updatedCompleted ? new Date().toISOString() : undefined,
+          completedAt: updatedCompletedAt ?? undefined,
         };
         const updatedList = [...taskList];
         updatedList[index] = updatedTask;
@@ -118,45 +116,36 @@ export const TaskApp = () => {
     }
   };
 
-  const getDate = () => {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
-    const date = today.getDate();
-    return `${month}/${date}/${year}`;
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-
   const editTask = (index: number) => {
     setEditingIndex(index);
-    SetEditingText(taskList[index].text);
+    setEditingText(taskList[index].text);
   };
 
   const saveEditTask = async (index: number) => {
     const taskToUpdate = taskList[index];
+    const editedAt = new Date().toISOString();
 
     try {
-      const response = await fetch(`/api/tasks/${taskToUpdate._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: editingText,
-          editedAt: new Date(),
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5237/api/tasks/${taskToUpdate.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: editingText,
+            editedAt,
+          }),
+        }
+      );
 
       if (response.ok) {
-        const updatedTask = { ...taskToUpdate, text: editingText };
+        const updatedTask = {
+          ...taskToUpdate,
+          text: editingText,
+          editedAt,
+        };
         const updatedList = [...taskList];
         updatedList[index] = updatedTask;
         setTaskList(updatedList);
@@ -171,14 +160,15 @@ export const TaskApp = () => {
 
   const cancelEditTask = () => {
     setEditingIndex(null);
-    SetEditingText("");
+    setEditingText("");
   };
 
-  const filteredTasks = taskList.filter((task) => {
-    if (filter === "completed") return task.completed;
-    if (filter === "pending") return !task.completed;
-    return true;
-  });
+  const filteredTasks =
+    taskList?.filter((task) => {
+      if (filter === "completed") return task.completed;
+      if (filter === "pending") return !task.completed;
+      return true;
+    }) || [];
 
   const baseHeight = 250;
   const taskHeight = 65;
@@ -196,129 +186,23 @@ export const TaskApp = () => {
           style={{ height: `${yellowDivHeight}px` }}
         ></div>
         <div className="relative z-10">
-          <form onSubmit={inputSubmit}>
-            <input
-              className="w-10/12 p-2 m-4 border-solid border-black border-2 rounded-md"
-              type="text"
-              value={task}
-              onChange={getTask}
-              placeholder="Add your task"
-            />
-            <button
-              className="p-2 m-4 border-solid border-black border-2 rounded-md bg-blue-500"
-              type="submit"
-              onClick={() => formatDate(getDate())}
-            >
-              Add Task
-            </button>
-          </form>
-          <div className="flex justify-center gap-4 mt-4">
-            <button
-              onClick={() => setFilter("all")}
-              className={`px-4 py-2 border rounded-md ${
-                filter === "all" ? "bg-blue-500 text-white" : "bg-white"
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setFilter("pending")}
-              className={`px-4 py-2 border rounded-md ${
-                filter === "pending" ? "bg-yellow-400 text-white" : "bg-white"
-              }`}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setFilter("completed")}
-              className={`px-4 py-2 border rounded-md ${
-                filter === "completed" ? "bg-green-500 text-white" : "bg-white"
-              }`}
-            >
-              Completed
-            </button>
-          </div>
-          <ul className="flex flex-wrap flex-col content-center mt-4">
-            {filteredTasks.map((task, index) => (
-              <li
-                key={index}
-                className={`w-10/12 h-18 px-2 flex flex-wrap items-center justify-between mb-2 border-solid border-black border-2 rounded-md ${
-                  task.completed ? "bg-green-300" : "bg-white"
-                }`}
-              >
-                <div className="flex flex-col gap-3 text-left">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      className="w-auto mt-2 px-2 py-1 border border-black rounded-md"
-                      value={editingText}
-                      onChange={(e) => SetEditingText(e.target.value)}
-                    />
-                  ) : (
-                    <span
-                      className={`${
-                        task.completed ? "line-through text-gray-500" : ""
-                      }`}
-                    >
-                      {task.text}
-                    </span>
-                  )}
-                  <div className="text-xs text-blue-500 flex flex-col">
-                    <span>
-                      {task.editedAt
-                        ? `Edited on: ${formatDate(task.editedAt)}`
-                        : `Created on: ${formatDate(task.createdAt)}`}
-                    </span>
-                    {task.completed && task.completedAt && (
-                      <span>Completed on: {formatDate(task.completedAt)}</span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  {editingIndex === index ? (
-                    <>
-                      <button
-                        className="min-w-[60px] p-1 bg-green-600 text-white border-2 border-black rounded-md"
-                        onClick={() => saveEditTask(index)}
-                      >
-                        Save
-                      </button>
-                      <button
-                        className="min-w-[60px] p-1 bg-gray-400 text-white border-2 border-black rounded-md"
-                        onClick={cancelEditTask}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="min-w-[60px] p-1 bg-yellow-400 text-white border-2 border-black rounded-md"
-                        onClick={() => editTask(index)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="min-w-[60px] p-1 bg-green-600 text-white border-2 border-black rounded-md"
-                        onClick={() => {
-                          toggleComplete(index);
-                          formatDate(getDate());
-                        }}
-                      >
-                        {task.completed ? "Undo" : "Done"}
-                      </button>
-                      <button
-                        className="min-w-[60px] p-1 bg-red-600 justify-items-end border-solid border-2 border-black rounded-md"
-                        onClick={() => deleteTask(task._id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <TaskForm
+            task={task}
+            onChange={(e) => setTask(e.target.value)}
+            onSubmit={inputSubmit}
+          />
+          <TaskFilter filter={filter} setFilter={setFilter} />
+          <TaskList
+            tasks={filteredTasks}
+            editingIndex={editingIndex}
+            editingText={editingText}
+            onEdit={editTask}
+            onSaveEdit={saveEditTask}
+            onCancelEdit={cancelEditTask}
+            onDelete={deleteTask}
+            onComplete={toggleComplete}
+            onEditTextChange={setEditingText}
+          />
         </div>
       </div>
     </div>
