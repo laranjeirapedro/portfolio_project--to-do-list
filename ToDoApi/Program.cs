@@ -17,13 +17,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddEnvironmentVariables();
 var mongoConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING");
 var mongoDatabaseName = Environment.GetEnvironmentVariable("MONGO_DB_NAME");
-var mongoDatabaseCollection = Environment.GetEnvironmentVariable("MongoDB:CollectionName");
 
 if (string.IsNullOrEmpty(mongoConnectionString) || string.IsNullOrEmpty(mongoDatabaseName))
 {
@@ -33,17 +30,10 @@ if (string.IsNullOrEmpty(mongoConnectionString) || string.IsNullOrEmpty(mongoDat
 builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(mongoConnectionString));
 builder.Services.AddSingleton<TaskService>();
 
-
 var app = builder.Build();
-
-// Pipeline HTTP
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
