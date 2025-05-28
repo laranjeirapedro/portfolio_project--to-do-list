@@ -1,6 +1,5 @@
 using MongoDB.Driver;
 using ToDoApi.Models;
-using Microsoft.Extensions.Options;
 
 namespace ToDoApi.Services;
 
@@ -8,11 +7,20 @@ public class TaskService
 {
     private readonly IMongoCollection<TaskItem> _tasks;
 
-    public TaskService(IConfiguration configuration)
+    public TaskService()
     {
-        var mongoClient = new MongoClient(configuration["MongoDB:ConnectionString"]);
-        var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
-        _tasks = mongoDatabase.GetCollection<TaskItem>(configuration["MongoDB:CollectionName"]);
+        var connectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING");
+        var databaseName = Environment.GetEnvironmentVariable("MONGO_DB_NAME");
+        var collectionName = Environment.GetEnvironmentVariable("MONGO_COLLECTION_NAME");
+
+        if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseName) || string.IsNullOrEmpty(collectionName))
+        {
+            throw new InvalidOperationException("Environment variable are not defined.");
+        }
+
+        var client = new MongoClient(connectionString);
+        var database = client.GetDatabase(databaseName);
+        _tasks = database.GetCollection<TaskItem>(collectionName);
     }
 
     public async Task<List<TaskItem>> GetAsync() =>

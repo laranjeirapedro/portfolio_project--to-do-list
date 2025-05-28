@@ -1,4 +1,8 @@
+using DotNetEnv;
+using MongoDB.Driver;
 using ToDoApi.Services;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,47 +16,34 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddOpenApi();
-builder.Services.AddSingleton<TaskService>();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Configuration.AddEnvironmentVariables();
+var mongoConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING");
+var mongoDatabaseName = Environment.GetEnvironmentVariable("MONGO_DB_NAME");
+var mongoDatabaseCollection = Environment.GetEnvironmentVariable("MongoDB:CollectionName");
+
+if (string.IsNullOrEmpty(mongoConnectionString) || string.IsNullOrEmpty(mongoDatabaseName))
+{
+    throw new InvalidOperationException("MONGO_CONNECTION_STRING and MONGO_DB_NAME are missing.");
+}
+
+builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(mongoConnectionString));
+builder.Services.AddSingleton<TaskService>();
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
-
 app.UseAuthorization();
-
 app.MapControllers();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

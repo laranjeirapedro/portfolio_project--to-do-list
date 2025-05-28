@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj": {}
+    "/Users/acmedent/Documents/portfolio_project--to-do-list/portfolio_project--to-do-list/ToDoApi/ToDoApi.csproj": {}
   },
   "projects": {
-    "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj": {
+    "/Users/acmedent/Documents/portfolio_project--to-do-list/portfolio_project--to-do-list/ToDoApi/ToDoApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj",
+        "projectUniqueName": "/Users/acmedent/Documents/portfolio_project--to-do-list/portfolio_project--to-do-list/ToDoApi/ToDoApi.csproj",
         "projectName": "ToDoApi",
-        "projectPath": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj",
-        "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
-        "outputPath": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\obj\\",
+        "projectPath": "/Users/acmedent/Documents/portfolio_project--to-do-list/portfolio_project--to-do-list/ToDoApi/ToDoApi.csproj",
+        "packagesPath": "/Users/acmedent/.nuget/packages/",
+        "outputPath": "/Users/acmedent/Documents/portfolio_project--to-do-list/portfolio_project--to-do-list/ToDoApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/acmedent/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,12 +38,16 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.2, )"
@@ -51,6 +55,10 @@
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[3.4.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[8.1.2, )"
             }
           },
           "imports": [
@@ -72,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
