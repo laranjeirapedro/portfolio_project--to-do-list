@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5237/api/tasks';
+const BASE_URL = NEXT_PUBLIC_BASE_URL
 
 export const fetchTasks = async () => {
     const res = await fetch(BASE_URL);
