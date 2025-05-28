@@ -1,0 +1,15 @@
+{
+    "build": {
+      "env": {
+        "DOTNET_ROOT": "/usr/share/dotnet"
+      },
+      "command": "dotnet publish ToDoApi/ToDoApi.csproj -c Release -o ToDoApi/out"
+    },
+    "start": {
+      "command": "dotnet ToDoApi/out/ToDoApi.dll",
+      "env": {
+        "ASPNETCORE_URLS": "http://0.0.0.0:3000"
+      }
+    }
+  }
+  
