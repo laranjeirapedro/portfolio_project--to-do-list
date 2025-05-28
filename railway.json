@@ -1,15 +1,11 @@
 {
-    "build": {
-      "env": {
-        "DOTNET_ROOT": "/usr/share/dotnet"
-      },
-      "command": "dotnet publish ToDoApi/ToDoApi.csproj -c Release -o ToDoApi/out"
-    },
-    "start": {
-      "command": "dotnet ToDoApi/out/ToDoApi.dll",
-      "env": {
-        "ASPNETCORE_URLS": "http://0.0.0.0:3000"
-      }
-    }
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "cd ToDoApi && dotnet publish -c Release -o out"
+  },
+  "deploy": {
+    "startCommand": "dotnet ToDoApi.dll",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
   }
-  
+}
