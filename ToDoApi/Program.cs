@@ -8,9 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowLocal", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3001", "https://portfolioproject-to-do-list-production.up.railway.app")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+
+    options.AddPolicy("AllowProduction", policy =>
+    {
+        policy.WithOrigins("https://portfolioproject-to-do-list-production.up.railway.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -32,7 +39,14 @@ builder.Services.AddSingleton<TaskService>();
 
 var app = builder.Build();
 
-app.UseCors("AllowFrontend");
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AllowLocal");
+}
+else
+{
+    app.UseCors("AllowProduction");
+}
 app.UseAuthorization();
 app.MapControllers();
 
