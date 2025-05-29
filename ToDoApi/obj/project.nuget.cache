@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hhkanE9MiVE=",
+  "dgSpecHash": "Jn1bnxCVhD8=",
   "success": true,
-  "projectFilePath": "D:\\Portfolio\\my-to-do-list\\todoapi\\ToDoApi.csproj",
+  "projectFilePath": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pedro\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\pedro\\.nuget\\packages\\dotnetenv\\3.1.1\\dotnetenv.3.1.1.nupkg.sha512",

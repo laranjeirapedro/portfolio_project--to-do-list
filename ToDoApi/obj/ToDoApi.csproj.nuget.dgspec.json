@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Portfolio\\my-to-do-list\\todoapi\\ToDoApi.csproj": {}
+    "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj": {}
   },
   "projects": {
-    "D:\\Portfolio\\my-to-do-list\\todoapi\\ToDoApi.csproj": {
+    "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Portfolio\\my-to-do-list\\todoapi\\ToDoApi.csproj",
+        "projectUniqueName": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj",
         "projectName": "ToDoApi",
-        "projectPath": "D:\\Portfolio\\my-to-do-list\\todoapi\\ToDoApi.csproj",
+        "projectPath": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\ToDoApi.csproj",
         "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
-        "outputPath": "D:\\Portfolio\\my-to-do-list\\todoapi\\obj\\",
+        "outputPath": "D:\\Portfolio\\my-to-do-list\\ToDoApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config"

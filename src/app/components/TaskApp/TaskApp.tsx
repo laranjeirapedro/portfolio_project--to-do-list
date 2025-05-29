@@ -14,11 +14,16 @@ export const TaskApp = () => {
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
+  const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "https://portfolioproject-to-do-list-production.up.railway.app";
+
+  
+  console.log("BASE_URL:", BASE_URL);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await fetch("http://localhost:5237/api/tasks");
+        const res = await fetch(`${BASE_URL}/api/tasks`);
         const data = await res.json();
         if (res.ok) {
           setTaskList(data.tasks);
@@ -37,7 +42,7 @@ export const TaskApp = () => {
     if (!task.trim()) return;
 
     try {
-      const res = await fetch("http://localhost:5237/api/tasks", {
+      const res = await fetch(`${BASE_URL}/api/tasks`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -61,7 +66,7 @@ export const TaskApp = () => {
 
   const deleteTask = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5237/api/tasks/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${id}`, {
         method: "DELETE",
       });
 
@@ -84,7 +89,7 @@ export const TaskApp = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5237/api/tasks/${taskToUpdate.id}`,
+        `${BASE_URL}/api/tasks/${taskToUpdate.id}`,
         {
           method: "PUT",
           headers: {
@@ -127,7 +132,7 @@ export const TaskApp = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5237/api/tasks/${taskToUpdate.id}`,
+        `${BASE_URL}/api/tasks/${taskToUpdate.id}`,
         {
           method: "PUT",
           headers: {
