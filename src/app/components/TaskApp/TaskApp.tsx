@@ -17,9 +17,6 @@ export const TaskApp = () => {
   const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "https://portfolioproject-to-do-list-production.up.railway.app";
 
-  
-  console.log("BASE_URL:", BASE_URL);
-
   useEffect(() => {
     const fetchTasks = async () => {
       try {
