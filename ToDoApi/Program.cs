@@ -8,18 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocal", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-
-    options.AddPolicy("AllowProduction", policy =>
-    {
-        policy.WithOrigins("https://portfolioproject-to-do-list-production.up.railway.app")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "https://portfolioproject-to-do-list-production.up.railway.app",
+            "https://portfolio-project-to-do-list.vercel.app"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
@@ -39,14 +37,7 @@ builder.Services.AddSingleton<TaskService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseCors("AllowLocal");
-}
-else
-{
-    app.UseCors("AllowProduction");
-}
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
 
