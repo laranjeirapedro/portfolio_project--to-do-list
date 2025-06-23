@@ -6,8 +6,8 @@ WORKDIR /app
 COPY . ./
 
 # Restaura as dependências e publica a aplicação
-RUN dotnet restore ./ToDoApi/ToDoApi.csproj
-RUN dotnet publish ./ToDoApi/ToDoApi.csproj -c Release -o out
+RUN dotnet restore ./ToDoApi.csproj
+RUN dotnet publish ./ToDoApi.csproj -c Release -o out
 
 # Etapa 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
