@@ -15,7 +15,7 @@ export const TaskApp = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
   const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://portfolioproject-to-do-list-production.up.railway.app";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://portfolio-project-to-do-list.onrender.com";
 
   useEffect(() => {
     const fetchTasks = async () => {

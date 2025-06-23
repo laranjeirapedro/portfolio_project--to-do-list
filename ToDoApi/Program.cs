@@ -13,7 +13,9 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             "http://localhost:3000",
             "http://localhost:3001",
-            "https://portfolioproject-to-do-list-production.up.railway.app",
+            "http://localhost:1000",
+            "http://localhost:5000",
+            "https://portfolio-project-to-do-list.onrender.com",
             "https://portfolio-project-to-do-list.vercel.app"
         )
         .AllowAnyHeader()
@@ -38,6 +40,7 @@ builder.Services.AddSingleton<TaskService>();
 var app = builder.Build();
 
 app.UseCors("AllowFrontend");
+app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
 
