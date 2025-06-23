@@ -1,134 +1,132 @@
 ![App screenshot](./public/app-thumbnail.webp)
 # To-Do App
 
-This is a simple and functional To-Do App developed using React, Next.js, Tailwind CSS, TypeScript, and MongoDB. The app allows users to manage their daily tasks efficiently by adding, editing, deleting, and marking tasks as completed in a clean and responsive interface.
+This is a fully functional and modern To-Do application built with React, Next.js, Tailwind CSS, TypeScript, and a .NET 8 backend connected to MongoDB and deployed via Railway.
+The app enables users to add, edit, delete, and mark tasks as completed, all within a clean and responsive interface.
 
 ## 🚀 Project Overview
 
-The To-Do App demonstrates full-stack development skills, combining a responsive frontend with a connected backend using MongoDB. It highlights my ability to create user-friendly interfaces, manage application state, and persist data using modern tools and frameworks.
+This project demonstrates my full-stack development skills by combining a responsive and modern frontend with a robust backend architecture using .NET. It features full CRUD functionality and persistent storage through MongoDB Atlas, adhering to scalable design principles with a decoupled frontend and backend.
 
 ## ✅ Features
 
 Task Management: Add, edit, delete, and mark tasks as completed.
 
-Data Persistence: All tasks are stored and retrieved from a MongoDB database using a full RESTful API.
+Data Persistence: Tasks are stored in MongoDB and accessed via a RESTful .NET API.
 
-Responsive Design: Works seamlessly on mobile, tablet, and desktop devices.
+Responsive Design: Optimized for mobile, tablet, and desktop devices.
 
 State Management: Managed with React hooks like useState and useEffect.
 
-Dynamic Styling: Designed with Tailwind CSS for a clean and modern look.
+Modern Styling: Styled with Tailwind CSS for a clean, professional UI.
 
-Type Safety: TypeScript is used throughout the codebase for reliability.
+Type Safety: Fully typed using TypeScript.
 
-API Routes (Next.js): Implemented using App Router and dynamic routes for handling CRUD operations.
+.NET Backend Integration: All data operations are performed via a REST API built with .NET and hosted on Railway.
 
 
 ## 🧩 Components
 
-TaskApp
-
-The main component of the application includes:
+### TaskApp
 
 Input Form: For adding and editing tasks.
 
-Task List: Displays all tasks dynamically from the database.
+Task List: Dynamically displays tasks retrieved from the backend.
 
-Actions: Edit, delete, and toggle completion status of each task.
+Task Actions: Edit, delete, and toggle the completion status of individual tasks.
 
 
 ## 🔧 Key Hooks & Methods
 
-useState: For managing task input, task list, and edit mode.
+useState: Manages task input, list state, and editing mode.
 
-useEffect: To fetch tasks on page load and refresh task list after actions.
+useEffect: Fetches tasks on page load and refreshes data after actions.
 
-fetch API: Used to communicate with Next.js API routes (GET, POST, PUT, DELETE).
+fetch: Used for API communication (GET, POST, PUT, DELETE) with the .NET backend.
 
 
 ## 🛠 Tech Stack
 
-Frontend
+### Frontend
 
 React
-
 Next.js (App Router)
-
 Tailwind CSS
-
 TypeScript
 
+### Backend
 
-Backend
-
+.NET 8 (C#)
 MongoDB Atlas
-
-Mongoose
-
-Next.js API Routes
-
+RESTful API (via Controllers)
+Hosted on Railway
 
 Development Tools
 
 VS Code
-
 Git & GitHub
-
 Postman (for API testing)
+Railway CLI & Dashboard
 
 
 ## ▶️ How to Run the Project
 
-### 1. Clone the repository
+### Frontend
+
+#### 1. Clone the repository
 git clone https://github.com/laranjeirapedro/portfolio_project--to-do-list.git
 
-### 2. Navigate into the directory
+#### 2. Navigate into the directory
 cd portfolio_project--to-do-list
 
-### 3. Install dependencies
+#### 3. Install dependencies
 npm install
 
-### 4. Create a .env.local file and add your MongoDB URI
-MONGODB_URI=your-mongodb-connection-string
-MONGODB_DB=todoApp
+#### 4. Create a .env.local file and add your backend API URL:
+NEXT_PUBLIC_API_URL=https://portfolioproject-to-do-list-production.up.railway.app
 
-### 5. Run the development server
+#### 5. Run the development server
 npm run dev
 
 Open http://localhost:3000 in your browser to view the app.
 
+### Backend (.NET)
+
+#### 1. Navigate to your backend directory or clone it separately if needed.
+
+#### 2. Create a .env file or configure environment variables:
+MONGO_CONNECTION_STRING=your-mongodb-uri
+MONGO_DB_NAME=todoApp
+
+#### 3. Run the API:
+dotnet run
+
+The backend will be available at http://localhost:5000 (or your configured port).
+
+
 ## 🌱 Future Enhancements
 
-[ ] User Authentication
-Secure user login to manage personal task lists.
+[ ] User Authentication for private task lists.
 
-[ ] Drag-and-Drop Reordering
-Allow users to reorder tasks by priority.
+[ ] Drag-and-Drop Reordering - Allow users to reorder tasks by priority.
 
-[ ] Due Dates and Reminders
-Let users assign due dates and receive notifications.
+[ ] Due Dates and Reminders - Let users assign due dates and receive notifications.
 
-[ ] Task Categories or Tags
-Organize tasks by category or custom tags.
+[ ] Task Categories or Tags - Organize tasks by category or custom tags.
 
-[ ] Dark Mode
-Add a theme toggle for better accessibility.
+[ ] Dark Mode - Add a theme toggle for better accessibility.
 
-[ ] Progress Tracker
-Show progress bars or stats for completed vs. pending tasks.
+[ ] Progress Tracker - Show progress bars or stats for completed vs. pending tasks.
 
 
 ## ❓ Why This Project?
 
-This project showcases my capabilities as a full-stack developer, highlighting:
+This project showcases:
 
-Responsive design and UX using Tailwind CSS.
-
-State and logic handling with React and TypeScript.
-
-API development and integration with Next.js App Router.
-
-Database integration and CRUD operations using MongoDB.
+Responsive UI and UX with Tailwind CSS.
+Frontend logic and state handling with React and TypeScript.
+Real-world RESTful API integration using .NET.
+Secure, scalable backend with MongoDB Atlas and Railway hosting.
 
 
 ## 🙌 Feedback
