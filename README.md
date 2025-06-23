@@ -1,7 +1,7 @@
 ![App screenshot](./public/app-thumbnail.webp)
 # To-Do App
 
-This is a fully functional and modern To-Do application built with React, Next.js, Tailwind CSS, TypeScript, and a .NET 8 backend connected to MongoDB and deployed via Railway.
+This is a fully functional and modern To-Do application built with React, Next.js, Tailwind CSS, TypeScript, and a .NET 8 backend connected to MongoDB and deployed via Render(Dockerfile).
 The app enables users to add, edit, delete, and mark tasks as completed, all within a clean and responsive interface.
 
 ## 🚀 Project Overview
@@ -22,7 +22,7 @@ Modern Styling: Styled with Tailwind CSS for a clean, professional UI.
 
 Type Safety: Fully typed using TypeScript.
 
-.NET Backend Integration: All data operations are performed via a REST API built with .NET and hosted on Railway.
+.NET Backend Integration: All data operations are performed via a REST API built with .NET and hosted on Render(Dockerfile).
 
 
 ## 🧩 Components
@@ -59,14 +59,14 @@ TypeScript
 .NET 8 (C#)
 MongoDB Atlas
 RESTful API (via Controllers)
-Hosted on Railway
+Hosted on Render(Dockerfile)
 
 Development Tools
 
 VS Code
 Git & GitHub
 Postman (for API testing)
-Railway CLI & Dashboard
+Render(Dockerfile) CLI & Dashboard
 
 
 ## ▶️ How to Run the Project
@@ -83,7 +83,7 @@ cd portfolio_project--to-do-list
 npm install
 
 #### 4. Create a .env.local file and add your backend API URL:
-NEXT_PUBLIC_API_URL=https://portfolioproject-to-do-list-production.up.railway.app
+NEXT_PUBLIC_API_URL=https://portfolio-project-to-do-list.onrender.com
 
 #### 5. Run the development server
 npm run dev
@@ -126,7 +126,7 @@ This project showcases:
 Responsive UI and UX with Tailwind CSS.
 Frontend logic and state handling with React and TypeScript.
 Real-world RESTful API integration using .NET.
-Secure, scalable backend with MongoDB Atlas and Railway hosting.
+Secure, scalable backend with MongoDB Atlas and Render(Dockerfile) hosting.
 
 
 ## 🙌 Feedback
